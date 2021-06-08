@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300&display=swap" rel="stylesheet">
+    <title>Test EJS</title>
+
+    <style>
+        body {
+            margin: 0;
+            margin-top: 1em;
+            padding: 0;
+            font-family: 'Kanit', sans-serif;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        img {
+            width: 30%;
+        }
+
+        p {
+            font-size: 1.2rem;
+        }
+
+        .title-container {
+            margin-top: 3em;
+            margin-bottom: 1em;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+        }
+
+        .title-container h3 {
+            margin: 0;
+        }
+
+        .title-container h1 {
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img src="https://thaihealthwatch.thaihealth.or.th/assets/Thaihealth_Watch_logo-removebg-preview-1606730188899.png"
+            alt="">
+        <div class="title-container">
+            <h3>ขอบคุณสำหรับการติดตาม ThaiHealth Watch 2021</h3>
+            <a href="https://thaihealthwatch.thaihealth.or.th/download.html">คลิกเพื่อดาวน์โหลดเอกสารได้ที่นี้</a><br>
+        </div>
+        <br>
+        <h3>ติดตามเนื้อหาและข่าวสารสถิติสุขภาพคนไทย ได้ที่</h3>
+        <p>
+            <a href="https://thaihealthwatch.thaihealth.or.th/">https://thaihealthwatch.thaihealth.or.th/</a>
+        </p>
+        <img src="https://thaihealthwatch.thaihealth.or.th/assets/Sponsers-1606727776930.png" alt="">
+    </div>
+</body>
+
+</html>
