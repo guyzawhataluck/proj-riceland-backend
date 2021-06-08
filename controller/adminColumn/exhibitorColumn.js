@@ -1,0 +1,51 @@
+module.exports = [
+  {
+    headerName: "ลำดับ",
+    field: "id",
+    width: 125,
+    filter: true,
+    cellRendererFramework: "Number",
+  },
+  {
+    headerName: "ชื่อ-สกุล",
+    field: "name",
+    width: 200,
+    filter: true,
+    cellRendererFramework: "String",
+  },
+  {
+    headerName: "เบอร์โทรศัพท์",
+    field: "phone",
+    width: 200,
+    filter: true,
+    cellRendererFramework: "String",
+  },
+  {
+    headerName: "E-mail",
+    field: "email",
+    width: 200,
+    filter: true,
+    cellRendererFramework: "String",
+  },
+  {
+    headerName: "หน่วยงาน",
+    field: "department",
+    width: 200,
+    filter: true,
+    cellRendererFramework: "String",
+  },
+  {
+    headerName: "ชุดเอกสาร",
+    field: "is_get_certificate",
+    width: 200,
+    filter: true,
+    cellRendererFramework: "String",
+  },
+  {
+    headerName: "การเข้าร่วม",
+    field: "is_online",
+    width: 200,
+    filter: true,
+    cellRendererFramework: "String",
+  },
+]

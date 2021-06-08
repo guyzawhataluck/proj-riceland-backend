@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300&display=swap" rel="stylesheet">
+    <title>Test EJS</title>
+
+    <style>
+        body {
+            margin: 0;
+            margin-top: 1em;
+            padding: 0;
+            font-family: 'Kanit', sans-serif;
+        }
+
+        .container {
+            text-align: left;
+        }
+
+        img {
+            width: 30%;
+        }
+
+        p {
+            font-size: 1.2rem;
+        }
+
+        .title-container {
+            margin-top: 3em;
+            margin-bottom: 1em;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+        }
+
+        .title-container h3 {
+            margin: 0;
+        }
+
+        .title-container h1 {
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <p><h3>รายละเอียดการติดต่อ</h3></p>
+        <p>เรื่อง : {{info.subject}}</p>
+        <p>อีเมล : {{info.email}}</p>
+        <p>ชื่อ-นามสกุล : {{info.name}}</p>
+        <p>เบอร์โทร : {{info.phone}}</p>
+        <p>รายละเอียด : {{info.detail}}</p>
+    </div>
+</body>
+
+</html>
