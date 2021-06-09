@@ -19,10 +19,10 @@ module.exports = (sequelize, Sequelize) => {
       },
       sp_detail_ch: {
         type: Sequelize.STRING,
-      },
-      product_id: {
-        type: Sequelize.INTEGER,
       }
+      // product_id: {
+      //   type: Sequelize.INTEGER,
+      // }
     },
     {
       freezeTableName: true,

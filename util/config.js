@@ -4,10 +4,10 @@ module.exports = {
   development: {
     database: "riceland_admin",
     username: "root",
-    password: "Palm2393",
+    password: "root",
     host: "localhost",
     dialect: "mysql",
-    port_db: "3306",
+    port_db: "8889",
     port: 3000,
   },
   test: {

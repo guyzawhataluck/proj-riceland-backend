@@ -43,6 +43,33 @@ db.order = require("../model/order")(sequelize, Sequelize)
 db.product = require("../model/product")(sequelize, Sequelize)
 db.specification = require("../model/specification")(sequelize, Sequelize)
 
+//Relations
+db.custumer.hasMany(db.order, {
+  foreignKey: "custumer_id",
+  onDelete: "cascade"
+})
+
+//db.order.belongsTo(db.custumer)
+
+db.product.hasMany(db.order, {
+  foreignKey: "product_id",
+  onDelete: "cascade"
+})
+
+//db.order.belongsTo(db.product)
+
+db.product.hasMany(db.specification, {
+  foreignKey: "product_id",
+  onDelete: "cascade"
+})
+
+//db.specification.belongsTo(db.product)
+
+db.brand.hasOne(db.product, {
+  foreignKey: "brand_id"
+})
+
+//db.brand.belongsTo(db.product)
 //! Relations
 // db.articles.hasMany(db.sub_article, {
 //   sourceKey: "id",

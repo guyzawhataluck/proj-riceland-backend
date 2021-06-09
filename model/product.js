@@ -22,10 +22,10 @@ module.exports = (sequelize, Sequelize) => {
       },
       pd_img_url: {
         type: Sequelize.TEXT,
-      },
-      brand_id: {
-        type: Sequelize.INTEGER,
       }
+      // brand_id: {
+      //   type: Sequelize.INTEGER,
+      // }
     },
     {
       freezeTableName: true,

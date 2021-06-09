@@ -13,13 +13,13 @@ module.exports = (sequelize, Sequelize) => {
       },
       mat_bag: {
         type: Sequelize.STRING,
-      },
-      custumer_id: {
-        type: Sequelize.INTEGER,
-      },
-      product_id: {
-        type: Sequelize.INTEGER,
-      },
+      }
+      //, custumer_id: {
+      //   type: Sequelize.INTEGER,
+      // },
+      // product_id: {
+      //   type: Sequelize.INTEGER,
+      // },
       // publish: {
       //   type: Sequelize.ENUM,
       //   field: "publish",
