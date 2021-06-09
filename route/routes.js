@@ -9,14 +9,219 @@ const pollController = require("../controller/pollController")
 const bannerController = require("../controller/bannerController")
 const { Router } = require("express")
 //const poll = require("../model/poll")
+const { errorLog } = require("../util/util")
+const db = require("../util/database")
+
+const Custumer = db.custumer
+const Product = db.product
+const Order = db.order
+const Specification = db.specification
+const Brand = db.brand
+const News = db.news
+const Admin = db.admin
+const { Op } = require("sequelize");
 
 //* Set Variable
 const route = express.Router()
 route.get("/", (req, res) => {
-  res.send("Thai Health Watch API")
+  res.send("riceland API")
 })
 
 //* Useful function
+//get all custumers
+route.get('/custumers', async function (req, res) {
+  console.log('query: ',req.query)
+  console.log('params: ',req.params)
+  console.log('body: ' ,req.body)
+
+  let custumers = await Custumer.findAll({
+    include: { 
+      model: Order,
+      include: {
+        model: Product,
+        attributes: ['pd_title_en']
+      },
+      attributes: ['size','mat_bag']
+    }
+  })
+  console.log(JSON.stringify(custumers, null, 2));
+  res.status(200).send(custumers)
+})
+
+//toggle status each custumer
+route.post('/custumers/:id', async function (req, res) {
+  console.log('query: ',req.query)
+  console.log('params: ',req.params)
+  console.log('body: ' ,req.body)
+
+  let custumer
+  let custumer_id = req.params.id
+  let current = await Custumer.findAll({
+    attributes: ['contacted'],
+    where:{
+        id: custumer_id
+    }
+  })
+  console.log(JSON.stringify(current[0].contacted));
+  if(current[0].contacted == false){
+    custumer = await Custumer.update({
+      contacted: true
+    },
+    {
+      where:{
+        id: custumer_id
+      }
+    })
+  }
+  else{
+    custumer = await Custumer.update({
+      contacted: false
+    },
+    {
+      where:{
+        id: custumer_id
+      }
+    })
+  }
+  let toggled = await Custumer.findAll({
+    attributes: ['contacted'],
+    where:{
+        id: custumer_id
+    }
+  })
+  res.status(200).send(toggled)
+  
+})
+
+// delete each custumer
+route.delete('/custumers/:id', async function (req, res) {
+  console.log('query: ',req.query)
+  console.log('params: ',req.params)
+  console.log('body: ' ,req.body)
+
+  let custumer_id = req.params.id
+  let custumer = await Custumer.destroy({
+      where:{
+          id: custumer_id
+      }
+  })
+
+  res.send({
+      'status':true
+  })
+  
+})
+// get all product
+route.get('/products', async function (req, res) {
+  console.log('query: ',req.query)
+  console.log('params: ',req.params)
+  console.log('body: ' ,req.body)
+
+  let products = await Product.findAll({
+    where: {
+      brand_id: null,
+      is_related_product: null
+    }
+  })
+  console.log(JSON.stringify(products, null, 2));
+  res.status(200).send(products)
+})
+
+// get all related product
+route.get('/relatedProducts', async function (req, res) {
+  console.log('query: ',req.query)
+  console.log('params: ',req.params)
+  console.log('body: ' ,req.body)
+
+  let products = await Product.findAll({
+    where: {
+      brand_id: null,
+      is_related_product: true
+    }
+  })
+  console.log(JSON.stringify(products, null, 2));
+  res.status(200).send(products)
+})
+
+// get all brand products
+route.get('/brandProducts', async function (req, res) {
+  console.log('query: ',req.query)
+  console.log('params: ',req.params)
+  console.log('body: ' ,req.body)
+
+  let products = await Product.findAll({
+    include: {
+      model: Brand,
+    },
+    where: {
+      brand_id: {
+        [Op.ne]: null
+      },
+      is_related_product: null
+    }
+  })
+  console.log(JSON.stringify(products, null, 2));
+  res.status(200).send(products)
+})
+// get brand
+route.get('/brands', async function (req, res) {
+  console.log('query: ',req.query)
+  console.log('params: ',req.params)
+  console.log('body: ' ,req.body)
+
+  let brands = await Brand.findAll()
+  console.log(JSON.stringify(brands, null, 2));
+  res.status(200).send(brands)
+})
+//get news
+route.get('/news', async function (req, res) {
+  console.log('query: ',req.query)
+  console.log('params: ',req.params)
+  console.log('body: ' ,req.body)
+
+  let news = await News.findAll()
+  console.log(JSON.stringify(news, null, 2));
+  res.status(200).send(news)
+})
+
+// create product
+route.put('/products', async function (req, res) {
+  console.log('query: ',req.query)
+  console.log('params: ',req.params)
+  console.log('body: ' ,req.body)
+  let product
+  product = await Product.create({
+      pd_title_en: req.body.pd_title_en,
+      pd_title_ch: req.body.pd_title_ch,
+      pd_content_en: req.body.pd_content_en,
+      pd_content_ch: req.body.pd_content_ch,
+      pd_img_url: req.body.pd_img_url,
+
+  })
+  .then(async (pro) => {
+    for (const sub in req.body.specification) {
+      await Specification.create({
+        product_id: pro.id,
+        sp_name_en: req.body.specification[sub].sp_name_en,
+        sp_name_ch: req.body.specification[sub].sp_name_ch,
+        sp_detail_en: req.body.specification[sub].sp_detail_en,
+        sp_detail_ch: req.body.specification[sub].sp_detail_ch,
+      })
+    }
+    productAdd = await Product.findAll({
+      include: { 
+        model: Specification,
+      },
+      where:{
+        id: pro.id
+    }
+    })
+  })
+  res.status(200).send(productAdd)
+  
+})
+
+// create relate product
 
 //? ----------   Util    -------------
 //! API 00 : Get Departments

@@ -15,13 +15,16 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
       },
       pd_content_en: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       pd_content_ch: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       pd_img_url: {
         type: Sequelize.TEXT,
+      },
+      is_related_product: {
+        type: Sequelize.BOOLEAN,
       }
       // brand_id: {
       //   type: Sequelize.INTEGER,
@@ -30,6 +33,7 @@ module.exports = (sequelize, Sequelize) => {
     {
       freezeTableName: true,
       underscored: true,
+      timestamps: false
     }
   )
   return Product

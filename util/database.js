@@ -56,7 +56,7 @@ db.product.hasMany(db.order, {
   onDelete: "cascade"
 })
 
-//db.order.belongsTo(db.product)
+db.order.belongsTo(db.product)
 
 db.product.hasMany(db.specification, {
   foreignKey: "product_id",
@@ -65,11 +65,11 @@ db.product.hasMany(db.specification, {
 
 //db.specification.belongsTo(db.product)
 
-db.brand.hasOne(db.product, {
+db.brand.hasMany(db.product, {
   foreignKey: "brand_id"
 })
 
-//db.brand.belongsTo(db.product)
+db.product.belongsTo(db.brand)
 //! Relations
 // db.articles.hasMany(db.sub_article, {
 //   sourceKey: "id",

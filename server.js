@@ -39,7 +39,7 @@ app.use("/api", routes)
 //? Set Multer Storage
 
 app.get("/api/test", (req, res) => {
-  res.send("Thai Health Watch API 1")
+  res.send("Riceland API 1")
 })
 
 app.listen(config.port, () => {

@@ -18,6 +18,7 @@ module.exports = (sequelize, Sequelize) => {
     {
       freezeTableName: true,
       underscored: true,
+      timestamps: false
     }
   )
   return Brand

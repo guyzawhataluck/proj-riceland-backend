@@ -23,13 +23,16 @@ module.exports = (sequelize, Sequelize) => {
       remark: {
         type: Sequelize.TEXT,
       },
-      connected: {
+      contacted: {
         type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
       },
     },
     {
       freezeTableName: true,
       underscored: true,
+      timestamps: false
     }
   )
   return Custumer
