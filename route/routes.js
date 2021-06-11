@@ -33,7 +33,7 @@ route.get('/custumers', async function (req, res) {
   console.log('query: ',req.query)
   console.log('params: ',req.params)
   console.log('body: ' ,req.body)
-
+try{
   let custumers = await Custumer.findAll({
     include: { 
       model: Order,
@@ -46,6 +46,10 @@ route.get('/custumers', async function (req, res) {
   })
   console.log(JSON.stringify(custumers, null, 2));
   res.status(200).send(custumers)
+  }catch (error) {
+    errorLog("Get all custumer", error)
+    return res.status(200).send({ status: "error", message: error.message })
+  }
 })
 
 //2 toggle status each custumer
@@ -53,7 +57,7 @@ route.patch('/custumers/:id', async function (req, res) {
   console.log('query: ',req.query)
   console.log('params: ',req.params)
   console.log('body: ' ,req.body)
-
+try{
   let custumer
   let custumer_id = req.params.id
   let current = await Custumer.findAll({
@@ -89,7 +93,14 @@ route.patch('/custumers/:id', async function (req, res) {
         id: custumer_id
     }
   })
+  if (!toggled){
+    return res.status(404).send({ success: false, error: `toggle fail` });
+  }
   res.status(200).send(toggled)
+}catch (error) {
+  errorLog("toggle status", error)
+  return res.status(200).send({ status: "error", message: error.message })
+}
   
 })
 
@@ -98,17 +109,23 @@ route.delete('/custumers/:id', async function (req, res) {
   console.log('query: ',req.query)
   console.log('params: ',req.params)
   console.log('body: ' ,req.body)
-
+  try{
   let custumer_id = req.params.id
   let custumer = await Custumer.destroy({
       where:{
           id: custumer_id
       }
   })
-
-  res.send({
+  if (!custumer){
+    return res.status(404).send({ success: false, error: `custumer_id not found` });
+  }
+  return res.send({
       'status':true
   })
+  }catch (error) {
+    errorLog("toggle status", error)
+    return res.status(200).send({ status: "error", message: error.message })
+  }
   
 })
 //4 get all product
@@ -116,7 +133,7 @@ route.get('/products', async function (req, res) {
   console.log('query: ',req.query)
   console.log('params: ',req.params)
   console.log('body: ' ,req.body)
-
+ try{
   let products = await Product.findAll({
     where: {
       brand_id: null,
@@ -125,6 +142,10 @@ route.get('/products', async function (req, res) {
   })
   console.log(JSON.stringify(products, null, 2));
   res.status(200).send(products)
+  }catch (error) {
+    errorLog("toggle status", error)
+    return res.status(200).send({ status: "error", message: error.message })
+  }
 })
 
 //5 get all related product
@@ -168,10 +189,15 @@ route.get('/brands', async function (req, res) {
   console.log('query: ',req.query)
   console.log('params: ',req.params)
   console.log('body: ' ,req.body)
-
+ try{
   let brands = await Brand.findAll()
   console.log(JSON.stringify(brands, null, 2));
-  res.status(200).send(brands)
+  return res.status(200).send(brands)
+ }catch (error) {
+  errorLog("Update Articles", error)
+  return res.status(200).send({ status: "error", message: error.message })
+ }
+
 })
 //8 get news
 route.get('/news', async function (req, res) {
@@ -297,13 +323,24 @@ route.get('/brands/:id', async function (req, res) {
   console.log('query: ',req.query)
   console.log('params: ',req.params)
   console.log('body: ' ,req.body)
+  let brand
+  try{
   let brand_id = req.params.id
-  let brand = await Brand.findOne({
+  brand = await Brand.findOne({
     where:{
       id: brand_id
   }
   })
-  res.status(200).send(brand)
+  if (!brand){
+    return res.status(404).send({ success: false, error: `brandId not found` });
+  }
+  return res.status(200).send(brand)
+  }catch (error) {
+    errorLog("Get brand", error)
+    return res.status(200).send({ status: "error", message: error.message })
+  }
+  
+  
 })
 
 //14 update each brand
@@ -663,6 +700,48 @@ route.delete('/products/:id', async function (req, res) {
 
 })
 
+// create new custumer
+route.post('/custumers', async function (req, res) {
+  console.log('query: ',req.query)
+  console.log('params: ',req.params)
+  console.log('body: ' ,req.body)
+  let custumer
+  custumer = await Custumer.create({
+      name: req.body.name,
+      email: req.body.email,
+      tel: req.body.tel,
+      remark: req.body.remark,
+      dest: req.body.dest,
+  })
+  .then(async (cus) => {
+    if (req.body.orders.length){
+    for (const sub in req.body.orders) {
+      let product_id = await Product.findOne({
+        where: {pd_title_en: req.body.orders[sub].product.pd_title_en},
+        attributes: ['id']
+      })
+      await Order.create({
+        custumer_id: cus.id,
+        product_id: product_id.dataValues.id,
+        size: req.body.orders[sub].size,
+        mat_bag: req.body.orders[sub].mat_bag,
+      })
+    }
+  }
+    cusAdd = await Custumer.findAll({
+      include: { 
+        model: Order,
+        include: {
+          model: Product,
+        },
+      },
+      where:{
+        id: cus.id
+    }
+    })
+  })
+  res.status(200).send(cusAdd)
+})
 
 //? ----------   Util    -------------
 //! API 00 : Get Departments
