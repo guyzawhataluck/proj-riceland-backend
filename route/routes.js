@@ -21,6 +21,17 @@ const News = db.news
 const Admin = db.admin
 const { Op } = require("sequelize");
 
+express().use((req, res, next) => {
+  // req.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", "*"),
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requestd-With, Content-Type, Accept,AuthToken, Authorization"
+    ),
+    res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE"),
+    next();
+});
+
 //* Set Variable
 const route = express.Router()
 route.get("/", (req, res) => {
@@ -29,12 +40,15 @@ route.get("/", (req, res) => {
 
 //* Useful function
 //1 get all custumers
-route.get('/custumers', async function (req, res) {
+route.get('/customers', async function (req, res) {
   console.log('query: ',req.query)
   console.log('params: ',req.params)
   console.log('body: ' ,req.body)
 try{
   let custumers = await Custumer.findAll({
+    order: [
+      ['id', 'ASC']
+    ],
     include: { 
       model: Order,
       include: {
@@ -44,8 +58,11 @@ try{
       attributes: ['size','mat_bag']
     }
   })
-  console.log(JSON.stringify(custumers, null, 2));
-   return res.status(200).send(custumers)
+  //console.log(JSON.stringify(custumers, null, 2));
+   return res.status(200).send({
+    success: true,
+    data: custumers,
+  })
   }catch (error) {
     errorLog("Get all custumer", error)
     return res.status(200).send({ success: false, message: error.message })
@@ -53,7 +70,7 @@ try{
 })
 
 //2 toggle status each custumer
-route.patch('/custumers/:id', async function (req, res) {
+route.patch('/customers/:id', async function (req, res) {
   console.log('query: ',req.query)
   console.log('params: ',req.params)
   console.log('body: ' ,req.body)
@@ -96,7 +113,10 @@ try{
   if (!toggled){
     return res.status(404).send({ success: false, error: `toggle fail` });
   }
-  return res.status(200).send(toggled)
+  return res.status(200).send({
+    success: true,
+    data: toggled,
+  })
 }catch (error) {
   errorLog("toggle status", error)
   return res.status(200).send({ success: false, message: error.message })
@@ -105,7 +125,7 @@ try{
 })
 
 //3 delete each custumer
-route.delete('/custumers/:id', async function (req, res) {
+route.delete('/customers/:id', async function (req, res) {
   console.log('query: ',req.query)
   console.log('params: ',req.params)
   console.log('body: ' ,req.body)
@@ -140,8 +160,11 @@ route.get('/products', async function (req, res) {
       is_related_product: null
     }
   })
-  console.log(JSON.stringify(products, null, 2));
-  return res.status(200).send(products)
+  //console.log(JSON.stringify(products, null, 2));
+  return res.status(200).send({
+    success: true,
+    data: products,
+  })
   }catch (error) {
     errorLog("get all product", error)
     return res.status(200).send({ success: false, message: error.message })
@@ -160,8 +183,11 @@ route.get('/relatedProducts', async function (req, res) {
       is_related_product: true
     }
   })
-  console.log(JSON.stringify(products, null, 2));
-  return res.status(200).send(products)
+  //console.log(JSON.stringify(products, null, 2));
+  return res.status(200).send({
+    success: true,
+    data: products,
+  })
   }catch (error) {
     errorLog("get all related product", error)
     return res.status(200).send({ success: false, message: error.message })
@@ -185,8 +211,11 @@ route.get('/brandProducts', async function (req, res) {
       is_related_product: null
     }
   })
-  console.log(JSON.stringify(products, null, 2));
-  return res.status(200).send(products)
+  //console.log(JSON.stringify(products, null, 2));
+  return res.status(200).send({
+    success: true,
+    data: products,
+  })
   }catch (error) {
     errorLog("get all brand product", error)
     return res.status(200).send({ success: false, message: error.message })
@@ -199,8 +228,11 @@ route.get('/brands', async function (req, res) {
   console.log('body: ' ,req.body)
  try{
   let brands = await Brand.findAll()
-  console.log(JSON.stringify(brands, null, 2));
-  return res.status(200).send(brands)
+  //console.log(JSON.stringify(brands, null, 2));
+  return res.status(200).send({
+    success: true,
+    data: brands,
+  })
  }catch (error) {
   errorLog("get all brand", error)
   return res.status(200).send({ success: false, message: error.message })
@@ -214,8 +246,11 @@ route.get('/news', async function (req, res) {
   console.log('body: ' ,req.body)
   try{
   let news = await News.findAll()
-  console.log(JSON.stringify(news, null, 2));
-  return res.status(200).send(news)
+  //console.log(JSON.stringify(news, null, 2));
+  return res.status(200).send({
+    success: true,
+    data: news,
+  })
   }catch (error) {
     errorLog("get all news", error)
     return res.status(200).send({ success: false, message: error.message })
@@ -256,7 +291,10 @@ route.post('/products', async function (req, res) {
     }
     })
   })
-  return res.status(200).send(productAdd)
+  return res.status(200).send({
+    success: true,
+    data: productAdd,
+  })
   }catch (error) {
     errorLog("create new product", error)
     return res.status(200).send({ success: false, message: error.message })
@@ -279,7 +317,10 @@ route.post('/relatedProducts', async function (req, res) {
       is_related_product: true
 
   })
-  return res.status(200).send(related_product)
+  return res.status(200).send({
+    success: true,
+    data: related_product,
+  })
   }catch (error) {
     errorLog("create relate product", error)
     return res.status(200).send({ success: false, message: error.message })
@@ -318,7 +359,10 @@ route.post('/brandProducts', async function (req, res) {
         id: newpro.id
     }
     })
-  return res.status(200).send(productAdd)
+  return res.status(200).send({
+    success: true,
+    data: productAdd,
+  })
   }catch (error) {
     errorLog("create brand product", error)
     return res.status(200).send({ success: false, message: error.message })
@@ -336,7 +380,10 @@ route.post('/brands', async function (req, res) {
       brand_name_en: req.body.brand_name_en,
       brand_name_ch: req.body.brand_name_ch
   })
-  return res.status(200).send(brand)
+  return res.status(200).send({
+    success: true,
+    data: brand,
+  })
   }catch (error) {
     errorLog("get all news", error)
     return res.status(200).send({ success: false, message: error.message })
@@ -360,7 +407,10 @@ route.get('/brands/:id', async function (req, res) {
   if (!brand){
     return res.status(404).send({ success: false, error: `brandId not found` });
   }
-  return res.status(200).send(brand)
+  return res.status(200).send({
+    success: true,
+    data: brand,
+  })
   }catch (error) {
     errorLog("Get brand", error)
     return res.status(200).send({ success: false, message: error.message })
@@ -396,7 +446,10 @@ route.put('/brands/:id', async function (req, res) {
   if (!show){
     return res.status(404).send({ success: false, error: `brandId not found` });
   }
-  return res.status(200).send(show)
+  return res.status(200).send({
+    success: true,
+    data: show,
+  })
   }catch (error) {
     errorLog("update each brand", error)
     return res.status(200).send({ success: false, message: error.message })
@@ -442,7 +495,10 @@ route.post('/news', async function (req, res) {
     news_img_url: req.body.news_img_url,
     news_date: req.body.news_date
   })
-  return res.status(200).send(news)
+  return res.status(200).send({
+    success: true,
+    data: news,
+  })
   }catch (error) {
     errorLog("create news", error)
     return res.status(200).send({ success: false, message: error.message })
@@ -464,7 +520,10 @@ route.get('/news/:id', async function (req, res) {
   if (!news){
     return res.status(404).send({ success: false, error: `news_id not found` });
   }
-  res.status(200).send(news)
+  return res.status(200).send({
+    success: true,
+    data: news,
+  });
   }catch (error) {
     errorLog("get each news", error)
     return res.status(200).send({ success: false, message: error.message })
@@ -499,7 +558,10 @@ route.put('/news/:id', async function (req, res) {
   if (!show){
     return res.status(404).send({ success: false, error: `news_id not found` });
   }
-  return res.status(200).send(show)
+  return res.status(200).send({
+    success: true,
+    data: show,
+  })
   }catch (error) {
     errorLog("update each news", error)
     return res.status(200).send({ success: false, message: error.message })
@@ -547,7 +609,10 @@ route.get('/relatedProducts/:id', async function (req, res) {
   if (!repro){
     return res.status(404).send({ success: false, error: `product_id not found` });
   }
-  res.status(200).send(repro)
+  res.status(200).send({
+    success: true,
+    data: repro,
+  })
   }catch (error) {
     errorLog("get each related product", error)
     return res.status(200).send({ success: false, message: error.message })
@@ -584,7 +649,10 @@ route.put('/relatedProducts/:id', async function (req, res) {
   if (!show){
     return res.status(404).send({ success: false, error: `product_id not found` });
   }
-  res.status(200).send(show)
+  res.status(200).send({
+    success: true,
+    data: show,
+  })
   }catch (error) {
     errorLog("update each related product", error)
     return res.status(200).send({ success: false, message: error.message })
@@ -639,7 +707,10 @@ route.get('/brandProducts/:id', async function (req, res) {
   if (!brandpro){
     return res.status(404).send({ success: false, error: `product_id not found in brand product` });
   }
-  res.status(200).send(brandpro)
+  res.status(200).send({
+    success: true,
+    data: brandpro,
+  })
   }catch (error) {
     errorLog("get each brand product", error)
     return res.status(200).send({ success: false, message: error.message })
@@ -686,7 +757,10 @@ route.put('/brandProducts/:id', async function (req, res) {
     if (!productEdit){
       return res.status(404).send({ success: false, error: `product_id not found in brand product` });
     }
-  res.status(200).send(productEdit)
+  res.status(200).send({
+    success: true,
+    data: productEdit,
+  })
   }catch (error) {
     errorLog("update each brand product", error)
     return res.status(200).send({ success: false, message: error.message })
@@ -737,7 +811,10 @@ route.get('/products/:id', async function (req, res) {
   if (!pro){
     return res.status(404).send({ success: false, error: `product_id not found in product` });
   }
-  res.status(200).send(pro)
+  res.status(200).send({
+    success: true,
+    data: pro,
+  })
   }catch (error) {
     errorLog("get each product", error)
     return res.status(200).send({ success: false, message: error.message })
@@ -795,7 +872,10 @@ route.put('/products/:id', async function (req, res) {
   if (!productUpdate){
     return res.status(404).send({ success: false, error: `product_id not found in product` });
   }
-  res.status(200).send(productUpdate)
+  res.status(200).send({
+    success: true,
+    data: productUpdate,
+  })
   }catch (error) {
     errorLog("update each product", error)
     return res.status(200).send({ success: false, message: error.message })
@@ -830,7 +910,7 @@ route.delete('/products/:id', async function (req, res) {
 })
 
 // 29 create new custumer
-route.post('/custumers', async function (req, res) {
+route.post('/customers', async function (req, res) {
   console.log('query: ',req.query)
   console.log('params: ',req.params)
   console.log('body: ' ,req.body)
@@ -870,7 +950,10 @@ route.post('/custumers', async function (req, res) {
     }
     })
   })
-  res.status(200).send(cusAdd)
+  res.status(200).send({
+    success: true,
+    data: cusAdd,
+  })
   }catch (error) {
     errorLog("create custumer", error)
     return res.status(200).send({ success: false, message: error.message })
